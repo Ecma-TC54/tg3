@@ -1,2 +1,2 @@
-# Software and system transparency - {NAME HERE} (TC54-TG{X})
+# Software and system transparency - Common Lifecycle Enumeration (TC54-TG3)
 
