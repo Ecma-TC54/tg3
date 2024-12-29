@@ -1,8 +1,6 @@
 # Goals & Constraints
 
-Author: Benji Visser
-
-Common Lifecycle Enumeration aims to standardize the communication of software and hardware component lifecycle events in a structured, machine-readable format.
+Common Lifecycle Enumeration (CLE) aims to standardize the communication of software and hardware component lifecycle events in a structured, machine-readable format.
 
 Let’s explore some of the constraints and goals below.
 
