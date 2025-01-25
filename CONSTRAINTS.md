@@ -4,6 +4,8 @@ Common Lifecycle Enumeration (CLE) aims to standardize the communication of soft
 
 Let’s explore some of the constraints and goals below.
 
+> The terms "MUST," "MUST NOT," "REQUIRED," "SHALL," "SHALL NOT," "SHOULD," "SHOULD NOT," "RECOMMENDED," "MAY," and "OPTIONAL" in this document are defined as per [RFC 2119](https://datatracker.ietf.org/doc/html/rfc2119).
+
 ## 1. Balance Structure and Flexibility
 
 One of main tensions with designing the CLE is providing enough structure to make lifecycle data consistent and machine-readable, while allowing enough flexibility to cover a wide range of real-world scenarios.
