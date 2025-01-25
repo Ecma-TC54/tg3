@@ -38,7 +38,7 @@ One of the most difficult and important challenges that the CLE seeks to address
 
 - MUST provide a formal way to capture surface events that could result in identifier changes and provide a way to surface the new identifiers.
 - MUST ensure that aliasing information is captured in a structured, machine-readable way, not just stuffed in human-readable comments. For tools to be able to consume and make use of these identifiers equivalences, aliases MUST be a formal part of the CLE model.
-- SHOULD NOT  allow informal or ad-hoc approaches to aliasing that undermine tooling and interoperability.
+- SHOULD NOT allow informal or ad-hoc approaches to aliasing that undermine tooling and interoperability.
 - The specification SHOULD initially support only PURL. The CLE will be focused on supporting only software to start and PURL supports all expected software use-cases.
 - SHOULD provide support for other identifier types in subsequent versions of the specification such as CPE, SWID, etc.
 
