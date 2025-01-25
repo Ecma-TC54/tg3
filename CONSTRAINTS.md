@@ -13,7 +13,8 @@ One of main tensions with designing the CLE is providing enough structure to mak
   - Prevalence - How universally they apply across different component types and ecosystems.
   - Impact - How much they influence risk and management of a component.
 - The events SHOULD enable component consumers to make informed decisions about risk, supportability, and upgrades.
-- The events MUST be unambiguous and factual in nature, not speculative or subjective.
+- The events MUST be unambiguous and factual in nature, avoiding speculative or subjective claims. For instance, an event must not rely on interpretations such as "we think this project by this maintainer is dead". Further guidance on claims is provided below.
+- The CLE should not initially attempt to handle 3rd party claims. A claim being a lifecycle or other event made by a third party in which we would need to verify the authenticity of the claim. This is a complex problem that will be addressed in future versions of the specification.
 
 As the CLE is put into practice, it's likely that additional events will be identified that are important to standardize. There SHOULD be a clear process for proposing and ratifying new events into the core specification over time.
 
@@ -21,10 +22,12 @@ As the CLE is put into practice, it's likely that additional events will be iden
 
 The CLE needs to work with the existing ecosystem of software supply chain standards, tooling, and processes. The spec MUST be designed for integration with existing tooling from day one.
 
-- MUST consider and define integration points with existing standards.
-    - PURL for component identification
+- MUST define integration points with existing standards and tools, such as:
+    - [PURL](https://github.com/package-url/purl-spec) for component identification
+    - [VERS](https://github.com/package-url/purl-spec/blob/master/VERSION-RANGE-SPEC.rst) for version range specification across different ecosystems
+- MUST propose to other standards bodies how the CLE can be integrated with their standards, such as:
     - CycloneDX and SPDX for SBOMs
-    - TEA for data exchange and component aliasing
+    - [TEA](https://github.com/CycloneDX/transparency-exchange-api) for data exchange and component aliasing
 - SHOULD be straightforward to implement incrementally within the tools and systems that organizations already use for building, dependency tracking, vulnerability management, SBOMs, etc. Adoption should not be an all-or-nothing affair.
 
 ## 3. Handling identifier aliasing
@@ -33,8 +36,9 @@ One of the most difficult and important challenges that the CLE seeks to address
 
 - The CLE MUST provide a formal way to capture surface events that could result in identifier changes and provide a way to surface the new identifiers.
 - MUST ensure that aliasing information is captured in a structured, machine-readable way, not just stuffed in human-readable comments. For tools to be able to consume and make use of these identifiers equivalences, aliases MUST be a formal part of the CLE model.
-- SHOULD NOT allow informal or ad-hoc approaches to aliasing that undermine tooling and interoperability.
-- The specification SHOULD only support PURL initially. Since we are focused on supporting only software to start, PURL should support all software use-cases.
+- SHOULD NOT  allow informal or ad-hoc approaches to aliasing that undermine tooling and interoperability.
+- The specification SHOULD only support PURL initially. The CPE will be focused on supporting only software to start and PURL should support all software use-cases.
+- The CLE SHOULD provide support for other identifier types in subsequent versions of the specification such as CPE, SWID, etc.
 
 ## 4. Scoping the specification
 
