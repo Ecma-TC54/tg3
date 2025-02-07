@@ -16,6 +16,7 @@ The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD", "S
 
 | Field | Type | Description |
 |-------|------|-------------|
+| `$schema` | string | URI identifying the [JSON Schema](https://json-schema.org/) document that describes the version of the CLE schema to use (e.g., "https://TODO/cle.v1.0.0.json") |
 | `events` | array | Ordered array of Event objects representing the component's lifecycle events. MUST be chronologically ordered by effective date. |
 
 ### Event Object
@@ -31,13 +32,6 @@ The base object that represents a discrete lifecycle event. All events share the
 | `published` | string | The time when the event was first published, as an RFC3339-formatted timestamp in UTC (ending in "Z"). |
 | `modified` | string | The time when the event was last modified, as an RFC3339-formatted timestamp in UTC (ending in "Z"). |
 
-**Optional Fields:**
-
-| Field | Type | Description |
-|-------|------|-------------|
-| `description` | string | Human-readable description of the event. SHOULD be clear and concise. |
-| `references` | array[string] | List of URLs to supporting documentation. SHOULD point to authoritative sources. |
-
 ### Event Types
 
 #### generalAvailability
@@ -46,17 +40,21 @@ The base object that represents a discrete lifecycle event. All events share the
 Indicates when a component version is released and available for use.
 
 **Additional Required Fields:**
-- `version`: VERS-formatted single version (e.g., "vers:npm/1.0.0")
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `versions` | array[string] | Array of simple version strings (e.g., ["1.0.0", "1.1.0"]). Required for version-specific events. |
+| `ranges` | array[string] | Array of VERS-formatted version ranges (e.g., ["vers:npm/>=1.0.0|<2.0.0"]). Required for range-based events. |
 
 Example:
 ```json
 {
   "type": "generalAvailability",
   "effective": "2023-01-01T00:00:00Z",
-  "version": "vers:npm/1.0.0",
+  "versions": ["1.0.0"],
+  "ranges": [],
   "published": "2023-01-01T00:00:00Z",
   "modified": "2023-01-01T00:00:00Z",
-  "description": "Version 1.0.0 is now generally available",
   "references": [
     "https://example.com/release-notes"
   ]
@@ -69,17 +67,21 @@ Example:
 Indicates when the manufacturer ceases development of a component or service.
 
 **Additional Required Fields:**
-- `range`: VERS-formatted version range (e.g., "vers:npm/>=1.0.0|<2.0.0")
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `versions` | array[string] | Array of simple version strings (e.g., ["1.0.0", "1.1.0"]). Required for version-specific events. |
+| `ranges` | array[string] | Array of VERS-formatted version ranges (e.g., ["vers:npm/>=1.0.0|<2.0.0"]). Required for range-based events. |
 
 Example:
 ```json
 {
   "type": "endOfDevelopment",
   "effective": "2024-01-01T00:00:00Z",
-  "range": "vers:npm/>=1.0.0|<2.0.0",
+  "ranges": ["vers:npm/>=1.0.0|<2.0.0"],
+  "versions": [],
   "published": "2023-06-01T00:00:00Z",
   "modified": "2023-06-01T00:00:00Z",
-  "description": "Development of 1.x versions will cease"
 }
 ```
 
@@ -89,20 +91,21 @@ Example:
 Indicates when the manufacturer ceases any and all support of a component or service. This point in time marks a transfer of risk from the manufacturer to the consuming organisation or user of the component or service, encompassing all cybersecurity knowledge and known vulnerabilities, with no further assistance provided by the manufacturer.
 
 **Additional Required Fields:**
-- `range`: VERS-formatted version range (e.g., "vers:npm/>=1.0.0|<2.0.0")
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `versions` | array[string] | Array of simple version strings (e.g., ["1.0.0", "1.1.0"]). Required for version-specific events. |
+| `ranges` | array[string] | Array of VERS-formatted version ranges (e.g., ["vers:npm/>=1.0.0|<2.0.0"]). Required for range-based events. |
 
 Example:
 ```json
 {
   "type": "endOfSupport",
   "effective": "2024-01-01T00:00:00Z",
-  "range": "vers:npm/>=1.0.0|<2.0.0",
+  "versions": ["1.0.0", "1.1.0"],
+  "ranges": ["vers:npm/>=2.0.0|<3.0.0"],
   "published": "2023-06-01T00:00:00Z",
   "modified": "2023-06-01T00:00:00Z",
-  "description": "All 1.x versions will no longer receive support after January 1st, 2024",
-  "references": [
-    "https://example.com/end-of-support"
-  ]
 }
 ```
 
@@ -112,17 +115,21 @@ Example:
 Indicates when the manufacturer no longer provides assured services such as technical assistance, user training, repairs, spare parts, and software updates for a component or service. Beyond this period, any support offered is discretionary and may incur extra costs or have restrictions.
 
 **Additional Required Fields:**
-- `range`: VERS-formatted version range (e.g., "vers:npm/>=1.0.0|<2.0.0")
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `versions` | array[string] | Array of simple version strings (e.g., ["1.0.0", "1.1.0"]). Required for version-specific events. |
+| `ranges` | array[string] | Array of VERS-formatted version ranges (e.g., ["vers:npm/>=1.0.0|<2.0.0"]). Required for range-based events. |
 
 Example:
 ```json
 {
   "type": "endOfGuaranteedSupport",
   "effective": "2024-01-01T00:00:00Z",
-  "range": "vers:npm/>=1.0.0|<2.0.0",
+  "ranges": ["vers:npm/>=1.0.0|<2.0.0"],
+  "versions": [],
   "published": "2023-06-01T00:00:00Z",
   "modified": "2023-06-01T00:00:00Z",
-  "description": "Guaranteed support for 1.x versions will end"
 }
 ```
 
@@ -132,17 +139,21 @@ Example:
 Indicates when the manufacturer stops distribution of a product after its defined useful life and formally notifies users. It marks the conclusion of the product's lifecycle, following a structured EOL process.
 
 **Additional Required Fields:**
-- `range`: VERS-formatted version range (e.g., "vers:npm/>=1.0.0|<2.0.0")
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `versions` | array[string] | Array of simple version strings (e.g., ["1.0.0", "1.1.0"]). Required for version-specific events. |
+| `ranges` | array[string] | Array of VERS-formatted version ranges (e.g., ["vers:npm/>=1.0.0|<2.0.0"]). Required for range-based events. |
 
 Example:
 ```json
 {
   "type": "endOfLife",
   "effective": "2024-01-01T00:00:00Z",
-  "range": "vers:npm/>=1.0.0|<2.0.0",
+  "ranges": ["vers:npm/>=1.0.0|<2.0.0"],
+  "versions": [],
   "published": "2023-06-01T00:00:00Z",
   "modified": "2023-06-01T00:00:00Z",
-  "description": "1.x versions have reached end of life"
 }
 ```
 
@@ -152,17 +163,21 @@ Example:
 Indicates when the manufacturer stops producing a component, often due to newer versions, unavailable parts, market changes, or strategic shifts. Existing units may still be available in warehouses, distribution channels, and for use, but no new units will be manufactured.
 
 **Additional Required Fields:**
-- `range`: VERS-formatted version range (e.g., "vers:npm/>=1.0.0|<2.0.0")
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `versions` | array[string] | Array of simple version strings (e.g., ["1.0.0", "1.1.0"]). Required for version-specific events. |
+| `ranges` | array[string] | Array of VERS-formatted version ranges (e.g., ["vers:npm/>=1.0.0|<2.0.0"]). Required for range-based events. |
 
 Example:
 ```json
 {
   "type": "endOfProduction",
   "effective": "2024-01-01T00:00:00Z",
-  "range": "vers:npm/>=1.0.0|<2.0.0",
+  "ranges": ["vers:npm/>=1.0.0|<2.0.0"],
+  "versions": [],
   "published": "2023-06-01T00:00:00Z",
   "modified": "2023-06-01T00:00:00Z",
-  "description": "Production of 1.x versions will cease"
 }
 ```
 
@@ -172,17 +187,21 @@ Example:
 Indicates when the manufacturer will cease actively promoting or advertising a component or service. While the component or service may still be available for purchase and support, it will no longer receive active marketing efforts from the manufacturer.
 
 **Additional Required Fields:**
-- `range`: VERS-formatted version range (e.g., "vers:npm/>=1.0.0|<2.0.0")
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `versions` | array[string] | Array of simple version strings (e.g., ["1.0.0", "1.1.0"]). Required for version-specific events. |
+| `ranges` | array[string] | Array of VERS-formatted version ranges (e.g., ["vers:npm/>=1.0.0|<2.0.0"]). Required for range-based events. |
 
 Example:
 ```json
 {
   "type": "endOfMarketing",
   "effective": "2024-01-01T00:00:00Z",
-  "range": "vers:npm/>=1.0.0|<2.0.0",
+  "ranges": ["vers:npm/>=1.0.0|<2.0.0"],
+  "versions": [],
   "published": "2023-06-01T00:00:00Z",
   "modified": "2023-06-01T00:00:00Z",
-  "description": "Marketing of 1.x versions will end"
 }
 ```
 
@@ -192,51 +211,59 @@ Example:
 Indicates when a version of a component is superseded by another version of a component.
 
 **Additional Required Fields:**
-- `version`: VERS-formatted version being superseded (e.g., "vers:npm/1.0.0")
-- `supersededByVersion`: VERS-formatted version that supersedes it (e.g., "vers:npm/2.0.0")
+- `supersededByVersion`: Plain version string that supersedes it (e.g., "2.0.0")
+
+**Additional Optional Fields:**
+| Field | Type | Description |
+|-------|------|-------------|
+| `versions` | array[string] | Array of simple version strings (e.g., ["1.0.0", "1.1.0"]). Required for version-specific events. |
+| `ranges` | array[string] | Array of VERS-formatted version ranges (e.g., ["vers:npm/>=1.0.0|<2.0.0"]). Required for range-based events. |
 
 Example:
 ```json
 {
   "type": "supersededBy",
   "effective": "2024-01-01T00:00:00Z",
-  "version": "vers:npm/1.0.0",
-  "supersededByVersion": "vers:npm/2.0.0",
+  "versions": ["1.0.0"],
+  "ranges": [],
+  "supersededByVersion": "2.0.0",
   "published": "2023-06-01T00:00:00Z",
   "modified": "2023-06-01T00:00:00Z",
-  "description": "Version 1.0.0 is superseded by version 2.0.0"
 }
 ```
 
 #### componentRenamed
 *Category: Component Event*
 
-Indicates when a component has been renamed with new identifiers.
+Indicates when a component is renamed.
 
 **Additional Required Fields:**
-- `identifiers`: Array of new identifiers for the component
+| Field | Type | Description |
+|-------|------|-------------|
+| `identifiers` | array[object] | Array of identifier objects specifying the new identifiers for the component. Each object must have `type` field set to "PURL" and `value` field containing a valid Package URL (PURL) string. |
 
 **Additional Optional Fields:**
-- `range`: VERS-formatted version range (e.g., "vers:npm/>=1.0.0|<2.0.0")
-- `version`: VERS-formatted single version (e.g., "vers:npm/1.0.0")
+| Field | Type | Description |
+|-------|------|-------------|
+| `description` | string | Human-readable description of the event. SHOULD be clear and concise, and SHOULD explain why the event is occurring. |
+| `references` | array[string] | List of URLs to supporting documentation. SHOULD point to authoritative sources. |
 
 Example:
 ```json
 {
   "type": "componentRenamed",
   "effective": "2024-01-01T00:00:00Z",
-  "published": "2023-12-01T00:00:00Z",
-  "modified": "2023-12-01T00:00:00Z",
-  "description": "The component has been renamed to 'new-component'",
-  "range": "vers:npm/>=1.0.0",
+  "published": "2023-06-01T00:00:00Z",
+  "modified": "2023-06-01T00:00:00Z",
+  "description": "The component has been renamed to 'new-component', because the product has been acquired by a new company",
+  "references": [
+    "https://example.com/component-renamed"
+  ],
   "identifiers": [
-    {
+      {
       "type": "PURL",
       "value": "pkg:npm/new-component"
     }
-  ],
-  "references": [
-    "https://example.com/rename-announcement"
   ]
 }
 ```
@@ -278,33 +305,36 @@ TODO: think about the possible distribution methods around GitHub, TEA, etc.
 
 ```json
 {
+  "$schema": "https://TODO/cle.v1.0.0.json",
   "events": [
     {
       "type": "generalAvailability",
       "effective": "2019-01-01T00:00:00Z",
-      "version": "vers:npm/1.0.0",
+      "versions": ["1.0.0"],
+      "ranges": [],
       "published": "2019-01-01T00:00:00Z",
       "modified": "2019-01-01T00:00:00Z"
     },
     {
       "type": "endOfSupport",
       "effective": "2020-01-01T00:00:00Z",
-      "range": "vers:npm/>=1.0.0|<2.0.0",
-      "references": [
-        "https://example.com/end-of-support"
-      ],
+      "versions": [],
+      "ranges": ["vers:npm/>=1.0.0|<2.0.0"],
       "published": "2020-01-01T00:00:00Z",
       "modified": "2020-01-01T00:00:00Z"
     },
     {
       "type": "componentRenamed",
       "effective": "2020-01-01T00:00:00Z",
-      "description": "The component has been renamed to 'new-component'.",
+      "description": "The component has been renamed to 'new-component', because the product has been acquired by a new company",
       "identifiers": [
         {
           "type": "PURL",
           "value": "pkg:npm/new-component"
         }
+      ],
+      "references": [
+        "https://example.com/component-renamed"
       ],
       "published": "2020-01-01T00:00:00Z",
       "modified": "2020-01-01T00:00:00Z"
