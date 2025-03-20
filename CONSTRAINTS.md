@@ -2,7 +2,7 @@
 
 Common Lifecycle Enumeration (CLE) aims to standardize the communication of software and hardware component lifecycle events in a structured, machine-readable format.
 
-Let’s explore some of the constraints and goals below.
+Let's explore some of the constraints and goals below.
 
 > The terms "MUST," "MUST NOT," "REQUIRED," "SHALL," "SHALL NOT," "SHOULD," "SHOULD NOT," "RECOMMENDED," "MAY," and "OPTIONAL" in this document are defined as per [RFC 2119](https://datatracker.ietf.org/doc/html/rfc2119).
 
@@ -30,6 +30,7 @@ The CLE needs to work with the existing ecosystem of software supply chain stand
 - MUST propose to other standards bodies how the CLE can be integrated with their standards, such as:
     - CycloneDX and SPDX for SBOMs
     - [TEA](https://github.com/CycloneDX/transparency-exchange-api) for data exchange and component aliasing
+- SHOULD be built with package managers in mind, recognizing their central role in software component distribution, versioning, and lifecycle management.
 - SHOULD be straightforward to implement incrementally within the tools and systems that organizations already use for building, dependency tracking, vulnerability management, SBOMs, etc. Adoption SHOULD NOT be an all-or-nothing affair.
 
 ## 3. Handling identifier aliasing

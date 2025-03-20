@@ -10,14 +10,68 @@ The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD", "S
 
 ## Schema Definition
 
+### JSON Schema
+
+TODO: Add JSON Schema reference here.
+
 ### Top-level Fields
 
 **Required Fields:**
 
 | Field | Type | Description |
 |-------|------|-------------|
-| `$schema` | string | URI identifying the [JSON Schema](https://json-schema.org/) document that describes the version of the CLE schema to use (e.g., "https://TODO/cle.v1.0.0.json") |
+| `$schema` | string | URI identifying the [JSON Schema](https://json-schema.org/) document that describes the version of the CLE schema to use (e.g., "https://TODO/cle.v1.0.0.json"). CLE is built on JSON Schema draft 2020-12. |
 | `events` | array | Ordered array of Event objects representing the component's lifecycle events. MUST be chronologically ordered by effective date. |
+
+**Additional Fields:**
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `versions` | array[object] | Array of version objects. Each object must contain either a `version` field with a simple string or a `range` field with a VERS-formatted version range string. |
+| `definitions` | object | Container for reusable policy definitions that can be referenced throughout the document. |
+
+### Definitions Object
+
+The definitions object allows specification of reusable policies and calculations that can be referenced by events.
+
+**Support Policy Fields:**
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `support` | array[object] | List of support policies ordered by support level. |
+
+Each support policy object has the following fields:
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `name` | string | Name of the support policy |
+| `level` | integer | Support level index starting at 0 for base support |
+| `description` | string | Human readable description of the policy |
+
+Example support policy definition:
+```json
+{
+  "definitions": {
+    "support": [
+      {
+        "name": "standard-support",
+        "level": 0,
+        "description": "Standard product support policy"
+      },
+      {
+        "name": "extended-support",
+        "level": 1,
+        "description": "Extended support with priority response times"
+      },
+      {
+        "name": "premium-support",
+        "level": 2,
+        "description": "Premium support with 24/7 coverage and dedicated team"
+      }
+    ]
+  }
+}
+```
 
 ### Event Object
 
@@ -28,9 +82,9 @@ The base object that represents a discrete lifecycle event. All events share the
 | Field | Type | Description |
 |-------|------|-------------|
 | `type` | string | The type of lifecycle event. MUST be one of the defined Event Types. |
-| `effective` | string | The time when the event takes effect, as an RFC3339-formatted timestamp in UTC (ending in "Z"). |
-| `published` | string | The time when the event was first published, as an RFC3339-formatted timestamp in UTC (ending in "Z"). |
-| `modified` | string | The time when the event was last modified, as an RFC3339-formatted timestamp in UTC (ending in "Z"). |
+| `effective` | string | The time when the event takes effect, as an ISO 8601 formatted timestamp in UTC (ending in "Z"). |
+| `published` | string | The time when the event was first published, as an ISO 8601 formatted timestamp in UTC (ending in "Z"). |
+| `modified` | string | The time when the event was last modified, as an ISO 8601 formatted timestamp in UTC (ending in "Z"). |
 
 ### Event Types
 
@@ -41,26 +95,22 @@ Indicates when a component version is released and available for use.
 
 **Additional Required Fields:**
 
-| Field | Type | Description |
-|-------|------|-------------|
-| `versions` | array[string] | Array of simple version strings (e.g., ["1.0.0", "1.1.0"]). Required for version-specific events. |
-| `ranges` | array[string] | Array of VERS-formatted version ranges (e.g., ["vers:npm/>=1.0.0|<2.0.0"]). Required for range-based events. |
+- versions
 
 Example:
 ```json
 {
   "type": "generalAvailability",
-  "effective": "2023-01-01T00:00:00Z",
-  "versions": ["1.0.0"],
-  "ranges": [],
-  "published": "2023-01-01T00:00:00Z",
-  "modified": "2023-01-01T00:00:00Z",
-  "references": [
-    "https://example.com/release-notes"
-  ]
+  "effective": "2024-01-01T00:00:00Z",
+  "versions": [
+    {
+      "version": "1.0.0"
+    }
+  ],
+  "published": "2023-06-01T00:00:00Z",
+  "modified": "2023-06-01T00:00:00Z",
 }
 ```
-
 #### endOfDevelopment
 *Category: Version Event*
 
@@ -68,18 +118,21 @@ Indicates when the manufacturer ceases development of a component or service.
 
 **Additional Required Fields:**
 
-| Field | Type | Description |
-|-------|------|-------------|
-| `versions` | array[string] | Array of simple version strings (e.g., ["1.0.0", "1.1.0"]). Required for version-specific events. |
-| `ranges` | array[string] | Array of VERS-formatted version ranges (e.g., ["vers:npm/>=1.0.0|<2.0.0"]). Required for range-based events. |
+- versions
 
 Example:
 ```json
 {
   "type": "endOfDevelopment",
   "effective": "2024-01-01T00:00:00Z",
-  "ranges": ["vers:npm/>=1.0.0|<2.0.0"],
-  "versions": [],
+  "versions": [
+    {
+      "version": "1.0.0"
+    },
+    {
+      "range": "vers:npm/>=1.0.0|<2.0.0"
+    }
+  ],
   "published": "2023-06-01T00:00:00Z",
   "modified": "2023-06-01T00:00:00Z",
 }
@@ -92,20 +145,23 @@ Indicates when the manufacturer ceases any and all support of a component or ser
 
 **Additional Required Fields:**
 
+- versions
+
+**Additional Optional Fields:**
+
 | Field | Type | Description |
 |-------|------|-------------|
-| `versions` | array[string] | Array of simple version strings (e.g., ["1.0.0", "1.1.0"]). Required for version-specific events. |
-| `ranges` | array[string] | Array of VERS-formatted version ranges (e.g., ["vers:npm/>=1.0.0|<2.0.0"]). Required for range-based events. |
+| `supportLevel` | integer | Support level index starting at 0 for base support. If not provided, it is assumed that the support level is standard support (level 0). |
 
 Example:
 ```json
 {
   "type": "endOfSupport",
   "effective": "2024-01-01T00:00:00Z",
-  "versions": ["1.0.0", "1.1.0"],
-  "ranges": ["vers:npm/>=2.0.0|<3.0.0"],
+  "versions": ["1.0.0"],
+  "supportLevel": 0,
   "published": "2023-06-01T00:00:00Z",
-  "modified": "2023-06-01T00:00:00Z",
+  "modified": "2023-06-01T00:00:00Z"
 }
 ```
 
@@ -116,10 +172,7 @@ Indicates when the manufacturer no longer provides assured services such as tech
 
 **Additional Required Fields:**
 
-| Field | Type | Description |
-|-------|------|-------------|
-| `versions` | array[string] | Array of simple version strings (e.g., ["1.0.0", "1.1.0"]). Required for version-specific events. |
-| `ranges` | array[string] | Array of VERS-formatted version ranges (e.g., ["vers:npm/>=1.0.0|<2.0.0"]). Required for range-based events. |
+- versions
 
 Example:
 ```json
@@ -140,10 +193,7 @@ Indicates when the manufacturer stops distribution of a product after its define
 
 **Additional Required Fields:**
 
-| Field | Type | Description |
-|-------|------|-------------|
-| `versions` | array[string] | Array of simple version strings (e.g., ["1.0.0", "1.1.0"]). Required for version-specific events. |
-| `ranges` | array[string] | Array of VERS-formatted version ranges (e.g., ["vers:npm/>=1.0.0|<2.0.0"]). Required for range-based events. |
+- versions
 
 Example:
 ```json
@@ -164,10 +214,7 @@ Indicates when the manufacturer stops producing a component, often due to newer 
 
 **Additional Required Fields:**
 
-| Field | Type | Description |
-|-------|------|-------------|
-| `versions` | array[string] | Array of simple version strings (e.g., ["1.0.0", "1.1.0"]). Required for version-specific events. |
-| `ranges` | array[string] | Array of VERS-formatted version ranges (e.g., ["vers:npm/>=1.0.0|<2.0.0"]). Required for range-based events. |
+- versions
 
 Example:
 ```json
@@ -188,10 +235,7 @@ Indicates when the manufacturer will cease actively promoting or advertising a c
 
 **Additional Required Fields:**
 
-| Field | Type | Description |
-|-------|------|-------------|
-| `versions` | array[string] | Array of simple version strings (e.g., ["1.0.0", "1.1.0"]). Required for version-specific events. |
-| `ranges` | array[string] | Array of VERS-formatted version ranges (e.g., ["vers:npm/>=1.0.0|<2.0.0"]). Required for range-based events. |
+- versions
 
 Example:
 ```json
@@ -214,10 +258,8 @@ Indicates when a version of a component is superseded by another version of a co
 - `supersededByVersion`: Plain version string that supersedes it (e.g., "2.0.0")
 
 **Additional Optional Fields:**
-| Field | Type | Description |
-|-------|------|-------------|
-| `versions` | array[string] | Array of simple version strings (e.g., ["1.0.0", "1.1.0"]). Required for version-specific events. |
-| `ranges` | array[string] | Array of VERS-formatted version ranges (e.g., ["vers:npm/>=1.0.0|<2.0.0"]). Required for range-based events. |
+
+- versions
 
 Example:
 ```json
