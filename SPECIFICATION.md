@@ -88,7 +88,7 @@ The base object that represents a discrete lifecycle event. All events share the
 
 ### Event Types
 
-#### generalAvailability
+#### released
 *Category: Version Event*
 
 Indicates when a component version is released and available for use.
@@ -100,7 +100,7 @@ Indicates when a component version is released and available for use.
 Example:
 ```json
 {
-  "type": "generalAvailability",
+  "type": "released",
   "effective": "2024-01-01T00:00:00Z",
   "versions": [
     {
@@ -114,7 +114,7 @@ Example:
 #### endOfDevelopment
 *Category: Version Event*
 
-Indicates when the manufacturer ceases development of a component or service.
+Indicates when the manufacturer stops active feature development for a component or service. Security patches and critical bug fixes continue, but no new features or enhancements will be added.
 
 **Additional Required Fields:**
 
@@ -141,7 +141,7 @@ Example:
 #### endOfSupport
 *Category: Version Event*
 
-Indicates when the manufacturer ceases any and all support of a component or service. This point in time marks a transfer of risk from the manufacturer to the consuming organisation or user of the component or service, encompassing all cybersecurity knowledge and known vulnerabilities, with no further assistance provided by the manufacturer.
+Indicates when the manufacturer permanently ends all support for a component or service, including security patches and bug fixes. At this point, all cybersecurity risks and known vulnerabilities become the sole responsibility of the user or consuming organization.
 
 **Additional Required Fields:**
 
@@ -168,7 +168,7 @@ Example:
 #### endOfGuaranteedSupport
 *Category: Version Event*
 
-Indicates when the manufacturer no longer provides assured services such as technical assistance, user training, repairs, spare parts, and software updates for a component or service. Beyond this period, any support offered is discretionary and may incur extra costs or have restrictions.
+Indicates when the manufacturer no longer provides assured services such as technical assistance, user training, and software updates for a component or service. Beyond this period, any support offered is discretionary and may incur extra costs or have restrictions.
 
 **Additional Required Fields:**
 
@@ -179,8 +179,11 @@ Example:
 {
   "type": "endOfGuaranteedSupport",
   "effective": "2024-01-01T00:00:00Z",
-  "ranges": ["vers:npm/>=1.0.0|<2.0.0"],
-  "versions": [],
+  "versions": [
+    {
+      "range": "vers:npm/>=1.0.0|<2.0.0"
+    }
+  ],
   "published": "2023-06-01T00:00:00Z",
   "modified": "2023-06-01T00:00:00Z",
 }
@@ -200,29 +203,11 @@ Example:
 {
   "type": "endOfLife",
   "effective": "2024-01-01T00:00:00Z",
-  "ranges": ["vers:npm/>=1.0.0|<2.0.0"],
-  "versions": [],
-  "published": "2023-06-01T00:00:00Z",
-  "modified": "2023-06-01T00:00:00Z",
-}
-```
-
-#### endOfProduction
-*Category: Version Event*
-
-Indicates when the manufacturer stops producing a component, often due to newer versions, unavailable parts, market changes, or strategic shifts. Existing units may still be available in warehouses, distribution channels, and for use, but no new units will be manufactured.
-
-**Additional Required Fields:**
-
-- versions
-
-Example:
-```json
-{
-  "type": "endOfProduction",
-  "effective": "2024-01-01T00:00:00Z",
-  "ranges": ["vers:npm/>=1.0.0|<2.0.0"],
-  "versions": [],
+  "versions": [
+    {
+      "range": "vers:npm/>=1.0.0|<2.0.0"
+    }
+  ],
   "published": "2023-06-01T00:00:00Z",
   "modified": "2023-06-01T00:00:00Z",
 }
@@ -242,8 +227,11 @@ Example:
 {
   "type": "endOfMarketing",
   "effective": "2024-01-01T00:00:00Z",
-  "ranges": ["vers:npm/>=1.0.0|<2.0.0"],
-  "versions": [],
+  "versions": [
+    {
+      "range": "vers:npm/>=1.0.0|<2.0.0"
+    }
+  ],
   "published": "2023-06-01T00:00:00Z",
   "modified": "2023-06-01T00:00:00Z",
 }
@@ -266,8 +254,11 @@ Example:
 {
   "type": "supersededBy",
   "effective": "2024-01-01T00:00:00Z",
-  "versions": ["1.0.0"],
-  "ranges": [],
+  "versions": [
+    {
+      "version": "1.0.0"
+    }
+  ],
   "supersededByVersion": "2.0.0",
   "published": "2023-06-01T00:00:00Z",
   "modified": "2023-06-01T00:00:00Z",
@@ -320,7 +311,7 @@ The distinction between these categories is important as it affects how tools an
 
 Events that affect specific versions or ranges of versions of a component. These events use either the `version` or `range` field to specify which versions are affected. Version Events include:
 
-- `generalAvailability`
+- `released`
 - `endOfDevelopment`
 - `endOfSupport`
 - `endOfGuaranteedSupport`
@@ -350,18 +341,24 @@ TODO: think about the possible distribution methods around GitHub, TEA, etc.
   "$schema": "https://TODO/cle.v1.0.0.json",
   "events": [
     {
-      "type": "generalAvailability",
+      "type": "released",
       "effective": "2019-01-01T00:00:00Z",
-      "versions": ["1.0.0"],
-      "ranges": [],
+      "versions": [
+        {
+          "version": "1.0.0"
+        }
+      ],
       "published": "2019-01-01T00:00:00Z",
       "modified": "2019-01-01T00:00:00Z"
     },
     {
       "type": "endOfSupport",
       "effective": "2020-01-01T00:00:00Z",
-      "versions": [],
-      "ranges": ["vers:npm/>=1.0.0|<2.0.0"],
+      "versions": [
+        {
+          "range": "vers:npm/>=1.0.0|<2.0.0"
+        }
+      ],
       "published": "2020-01-01T00:00:00Z",
       "modified": "2020-01-01T00:00:00Z"
     },
