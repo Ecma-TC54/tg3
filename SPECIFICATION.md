@@ -38,14 +38,13 @@ The definitions object allows specification of reusable policies and calculation
 
 | Field | Type | Description |
 |-------|------|-------------|
-| `support` | array[object] | List of support policies ordered by support level. |
+| `support` | array[object] | List of support policies. |
 
 Each support policy object has the following fields:
 
 | Field | Type | Description |
 |-------|------|-------------|
-| `name` | string | Name of the support policy |
-| `level` | integer | Support level index starting at 0 for base support |
+| `id` | string | Unique identifier for the support policy |
 | `description` | string | Human readable description of the policy |
 
 Example support policy definition:
@@ -54,18 +53,15 @@ Example support policy definition:
   "definitions": {
     "support": [
       {
-        "name": "standard-support",
-        "level": 0,
+        "id": "standard",
         "description": "Standard product support policy"
       },
       {
-        "name": "extended-support",
-        "level": 1,
+        "id": "extended",
         "description": "Extended support with priority response times"
       },
       {
-        "name": "premium-support",
-        "level": 2,
+        "id": "premium",
         "description": "Premium support with 24/7 coverage and dedicated team"
       }
     ]
@@ -97,6 +93,12 @@ Indicates when a component version is released and available for use.
 
 - versions
 
+**Additional Optional Fields:**
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `license` | string | License identifier that summarizes the license as declared in the component's metadata. |
+
 Example:
 ```json
 {
@@ -107,10 +109,12 @@ Example:
       "version": "1.0.0"
     }
   ],
+  "license": "MIT",
   "published": "2023-06-01T00:00:00Z",
   "modified": "2023-06-01T00:00:00Z",
 }
 ```
+
 #### endOfDevelopment
 *Category: Version Event*
 
@@ -119,6 +123,7 @@ Indicates when the manufacturer stops active feature development for a component
 **Additional Required Fields:**
 
 - versions
+- supportId
 
 Example:
 ```json
@@ -133,6 +138,7 @@ Example:
       "range": "vers:npm/>=1.0.0|<2.0.0"
     }
   ],
+  "supportId": "standard",
   "published": "2023-06-01T00:00:00Z",
   "modified": "2023-06-01T00:00:00Z",
 }
@@ -146,12 +152,7 @@ Indicates when the manufacturer permanently ends all support for a component or 
 **Additional Required Fields:**
 
 - versions
-
-**Additional Optional Fields:**
-
-| Field | Type | Description |
-|-------|------|-------------|
-| `supportLevel` | integer | Support level index starting at 0 for base support. If not provided, it is assumed that the support level is standard support (level 0). |
+- supportId
 
 Example:
 ```json
@@ -159,7 +160,7 @@ Example:
   "type": "endOfSupport",
   "effective": "2024-01-01T00:00:00Z",
   "versions": ["1.0.0"],
-  "supportLevel": 0,
+  "supportId": "standard",
   "published": "2023-06-01T00:00:00Z",
   "modified": "2023-06-01T00:00:00Z"
 }
@@ -348,6 +349,7 @@ TODO: think about the possible distribution methods around GitHub, TEA, etc.
           "version": "1.0.0"
         }
       ],
+      "license": "MIT",
       "published": "2019-01-01T00:00:00Z",
       "modified": "2019-01-01T00:00:00Z"
     },
