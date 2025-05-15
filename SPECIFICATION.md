@@ -8,6 +8,17 @@ The Common Lifecycle Enumeration (CLE) provides a standardized format for commun
 
 The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this document are to be interpreted as described in [RFC 2119](https://datatracker.ietf.org/doc/html/rfc2119).
 
+## Types of Work
+
+The following types of work are commonly associated with software projects regardless of whether they are open source or not.
+
+- `Marketing`: Promoting and advertising a software project to potential users.
+- `Feature Development`: Adding new features or functionality to a software project.
+- `Bug Fixes`: Addressing and resolving issues or defects in a software project.
+- `Security Fixes`: A distinct type of bug fix focused on security vulnerabilities that is useful to differentiate from other types of bug fixes.
+- `Distribution`: The process of making a software project available for use by others.
+- `Documentation`: Writing and updating documentation for a software project to help users understand how to use it.
+
 ## Schema Definition
 
 ### JSON Schema
@@ -34,7 +45,9 @@ TODO: Add JSON Schema reference here.
 
 The definitions object allows specification of reusable policies and calculations that can be referenced by events.
 
-**Support Policy Fields:**
+**Support**
+
+This is a list of support policies provided for a specific version or version range of a component. Note this SHOULD NOT include third party support policies or options.
 
 | Field | Type | Description |
 |-------|------|-------------|
@@ -91,7 +104,7 @@ Indicates when a component version is released and available for use.
 
 **Additional Required Fields:**
 
-- versions
+- version
 
 **Additional Optional Fields:**
 
@@ -104,11 +117,7 @@ Example:
 {
   "type": "released",
   "effective": "2024-01-01T00:00:00Z",
-  "versions": [
-    {
-      "version": "1.0.0"
-    }
-  ],
+  "version": "1.0.0",
   "license": "MIT",
   "published": "2023-06-01T00:00:00Z",
   "modified": "2023-06-01T00:00:00Z",
@@ -118,7 +127,9 @@ Example:
 #### endOfDevelopment
 *Category: Version Event*
 
-Indicates when the manufacturer stops active feature development for a component or service. Security patches and critical bug fixes continue, but no new features or enhancements will be added.
+The manufacturer or maintainer ceases work on `Feature Development` for a specific version or version range of a component or service. `Security Fixes` and `Bug Fixes` will continue to be provided for this specific version or version range until `endOfSupport` is declared, but no new features or enhancements will be added.
+
+> TL;DR: Ceasing Feature Development.
 
 **Additional Required Fields:**
 
@@ -147,7 +158,11 @@ Example:
 #### endOfSupport
 *Category: Version Event*
 
-Indicates when the manufacturer permanently ends all support for a component or service, including security patches and bug fixes. At this point, all cybersecurity risks and known vulnerabilities become the sole responsibility of the user or consuming organization.
+The manufacturer or maintainer ceases providing `Security Fixes` and `Bug Fixes` for a specific version or version range of a component or service.
+
+The `supportId` field MUST be included and used to specify which support policy is ending, referencing a support policy defined in the definitions section.
+
+> TL;DR: Ceasing Security Fixes and Bug Fixes.
 
 **Additional Required Fields:**
 
@@ -160,40 +175,18 @@ Example:
   "type": "endOfSupport",
   "effective": "2024-01-01T00:00:00Z",
   "versions": ["1.0.0"],
-  "supportId": "standard",
+  "supportId": "guaranteed",
   "published": "2023-06-01T00:00:00Z",
   "modified": "2023-06-01T00:00:00Z"
-}
-```
-
-#### endOfGuaranteedSupport
-*Category: Version Event*
-
-Indicates when the manufacturer no longer provides assured services such as technical assistance, user training, and software updates for a component or service. Beyond this period, any support offered is discretionary and may incur extra costs or have restrictions.
-
-**Additional Required Fields:**
-
-- versions
-
-Example:
-```json
-{
-  "type": "endOfGuaranteedSupport",
-  "effective": "2024-01-01T00:00:00Z",
-  "versions": [
-    {
-      "range": "vers:npm/>=1.0.0|<2.0.0"
-    }
-  ],
-  "published": "2023-06-01T00:00:00Z",
-  "modified": "2023-06-01T00:00:00Z",
 }
 ```
 
 #### endOfLife
 *Category: Version Event*
 
-Indicates when the manufacturer stops distribution of a product after its defined useful life and formally notifies users. It marks the conclusion of the product's lifecycle, following a structured EOL process.
+The manufacturer or maintainer formally ceases all work (including `Distribution`, `Feature Development`, `Bug Fixes`, `Security Fixes`, `Documentation`, and `Maintenance`) for a specific version or version range of a component. No further updates, support, or distribution will be provided for this specific version or version range. The component is considered retired.
+
+> TL;DR: Ceasing all work.
 
 **Additional Required Fields:**
 
@@ -217,7 +210,9 @@ Example:
 #### endOfMarketing
 *Category: Version Event*
 
-Indicates when the manufacturer will cease actively promoting or advertising a component or service. While the component or service may still be available for purchase and support, it will no longer receive active marketing efforts from the manufacturer.
+The manufacturer or maintainer ceases marketing and promotion of a specific version or version range of a component or service. The component or service may still be available, and existing support policies may remain in effect, but the manufacturer will no longer seek new customers or promote its use.
+
+> TL;DR: Ceasing marketing and promotion.
 
 **Additional Required Fields:**
 
@@ -315,10 +310,7 @@ Events that affect specific versions or ranges of versions of a component. These
 - `released`
 - `endOfDevelopment`
 - `endOfSupport`
-- `endOfGuaranteedSupport`
 - `endOfLife`
-- `endOfProduction`
-- `endOfMarketing`
 - `supersededBy`
 
 ### Component Events
@@ -326,10 +318,6 @@ Events that affect specific versions or ranges of versions of a component. These
 Events that affect the component itself and may impact how the component is identified or referenced. These events often affect all versions of a component from the effective date forward. Component Events include:
 
 - `componentRenamed`: Changes how the component is identified
-
-## Extended Support
-
-TODO: think about how we would represent extended support in the CLE.
 
 ## Distribution
 
@@ -388,15 +376,17 @@ TODO: think about the possible distribution methods around GitHub, TEA, etc.
 
 The CLE specification aims to address several common use cases in software component lifecycle management. The following use cases are supported in version 1.0.0:
 
-v1.0.0 Supported Use Cases:
+### v1.0.0 Supported Use Cases:
 - General Availability: Track when new versions of a component are released and available for use
-- End of Support: Communicate when versions will no longer receive updates or support
+- End of Support/End of Life: Communicate when versions will no longer receive updates or support
 - Component Renaming: Handle cases where a component's identifiers change (e.g., package rename)
 
-Future Use Cases:
+### Future Use Cases:
+- Complex License Changes: Handling license changes for previously released versions. A maintainer may change the license for a previously released version, we may use a `licenseChange` event with a range of versions to handle this use case.
 - Component Bundling/Unbundling: Track when components are bundled into or extracted from larger packages
 - Component Acquisition: Handle cases where components change ownership
 - Extended Support: Support for third-party extended support offerings
+- Third Party Claims: Handling CLE from a third party perspective making claims about a component which they have no operational control over.
 - Component Forking: Track when components are forked into new projects
 - Export Restrictions: Handle cases where components become restricted in certain regions
 - Security Status Changes: Track when components are marked as compromised or unsafe
