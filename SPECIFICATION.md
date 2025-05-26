@@ -15,7 +15,7 @@ The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD", "S
 The following types of work are commonly associated with software projects regardless of whether they are open source or not.
 
 - `Marketing`: Promoting and advertising a software project to potential users.
-- `Feature Development`: Adding new features or functionality to a software project.
+- `Substantial Modifications`: Making substantial changes to a software project that are not considered bug fixes or security fixes, such as adding new features or functionality.
 - `Bug Fixes`: Addressing and resolving issues or defects in a software project.
 - `Security Fixes`: A distinct type of bug fix focused on security vulnerabilities that is useful to differentiate from other types of bug fixes.
 - `Distribution`: The process of making a software project available for use by others.
@@ -59,8 +59,9 @@ Each support policy object has the following fields:
 
 | Field | Type | Description |
 |-------|------|-------------|
-| `id` | string | Unique identifier for the support policy |
-| `description` | string | Human readable description of the policy |
+| `id` | string | **Required.** Unique identifier for the support policy |
+| `description` | string | **Required.** Human readable description of the policy |
+| `url` | string | **Optional.** URL to detailed documentation about this support policy |
 
 Example support policy definition:
 ```json
@@ -69,15 +70,17 @@ Example support policy definition:
     "support": [
       {
         "id": "standard",
-        "description": "Standard product support policy"
+        "description": "Standard product support policy",
+        "url": "https://example.com/support/standard"
       },
       {
         "id": "extended",
-        "description": "Extended support with priority response times"
+        "description": "Extended support with priority response times",
+        "url": "https://example.com/support/extended"
       },
       {
         "id": "premium",
-        "description": "Premium support with 24/7 coverage and dedicated team"
+        "description": "Premium support with 24/7 coverage and dedicated team",
       }
     ]
   }
@@ -129,9 +132,9 @@ Example:
 #### endOfDevelopment
 *Category: Version Event*
 
-The manufacturer or maintainer ceases work on `Feature Development` for a specific version or version range of a component or service. `Security Fixes` and `Bug Fixes` will continue to be provided for this specific version or version range until `endOfSupport` is declared, but no new features or enhancements will be added.
+The manufacturer or maintainer ceases work on `Substantial Modifications` for a specific version or version range of a component or service. `Security Fixes` and `Bug Fixes` will continue to be provided for this specific version or version range until `endOfSupport` is declared, but no new features or enhancements will be added.
 
-> TL;DR: Ceasing Feature Development.
+> TL;DR: Ceasing Substantial Modifications.
 
 **Additional Required Fields:**
 
@@ -164,6 +167,8 @@ The manufacturer or maintainer ceases providing `Security Fixes` and `Bug Fixes`
 
 The `supportId` field MUST be included and used to specify which support policy is ending, referencing a support policy defined in the definitions section.
 
+An `endOfSupport` event should only exist when a support definition object exists.
+
 > TL;DR: Ceasing Security Fixes and Bug Fixes.
 
 **Additional Required Fields:**
@@ -186,7 +191,7 @@ Example:
 #### endOfLife
 *Category: Version Event*
 
-The manufacturer or maintainer formally ceases all work (including `Distribution`, `Feature Development`, `Bug Fixes`, `Security Fixes`, `Documentation`, and `Maintenance`) for a specific version or version range of a component. No further updates, support, or distribution will be provided for this specific version or version range. The component is considered retired.
+The manufacturer or maintainer formally ceases all work (including `Distribution`, `Substantial Modifications`, `Bug Fixes`, `Security Fixes`, `Documentation`, and `Maintenance`) for a specific version or version range of a component. No further updates, support, or distribution will be provided for this specific version or version range. The component is considered retired.
 
 > TL;DR: Ceasing all work.
 
@@ -202,6 +207,30 @@ Example:
   "versions": [
     {
       "range": "vers:npm/>=1.0.0|<2.0.0"
+    }
+  ],
+  "published": "2023-06-01T00:00:00Z",
+  "modified": "2023-06-01T00:00:00Z",
+}
+```
+
+### endOfDistribution
+*Category: Version Event*
+
+The manufacturer or maintainer ceases distribution of a specific version or version range of a component or service. This should only be used when the manufacturer has control over the distribution of the component or service.
+
+**Additional Required Fields:**
+
+- versions
+
+Example:
+```json
+{
+  "type": "endOfDistribution",
+  "effective": "2024-01-01T00:00:00Z",
+  "versions": [
+    {
+      "version": "1.0.0"
     }
   ],
   "published": "2023-06-01T00:00:00Z",
@@ -238,7 +267,7 @@ Example:
 #### supersededBy
 *Category: Version Event*
 
-Indicates when a version of a component is superseded by another version of a component.
+Indicates when a version of a component is superseded by another version of a component. This should only exist for components in which version progression is not implicit, for example, a component is not using semantic versioning.
 
 **Additional Required Fields:**
 - `supersededByVersion`: Plain version string that supersedes it (e.g., "2.0.0")
