@@ -34,7 +34,7 @@ TODO: Add JSON Schema reference here.
 | Field | Type | Description |
 |-------|------|-------------|
 | `$schema` | string | URI identifying the [JSON Schema](https://json-schema.org/) document that describes the version of the CLE schema to use (e.g., "https://TODO/cle.v1.0.0.json"). CLE is built on JSON Schema draft 2020-12. |
-| `events` | array | Ordered array of Event objects representing the component's lifecycle events. MUST be chronologically ordered by effective date. |
+| `events` | array | Ordered array of Event objects representing the component's lifecycle events. MUST be chronologically ordered by effective date, descending. |
 
 **Additional Fields:**
 
