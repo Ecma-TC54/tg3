@@ -217,7 +217,7 @@ Example:
 ### endOfDistribution
 *Category: Version Event*
 
-The manufacturer or maintainer ceases distribution of a specific version or version range of a component or service. This should only be used when the manufacturer has control over the distribution of the component or service.
+The manufacturer or maintainer ceases distribution of a specific version or version range of a component or service. This should only be used when the manufacturer has control over the distribution of the component or service - e.g. if the manufacturer publishes to a registry, they likely do not have this control, and thus would not provide this event.
 
 **Additional Required Fields:**
 
