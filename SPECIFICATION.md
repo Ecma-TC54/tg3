@@ -167,7 +167,7 @@ The manufacturer or maintainer ceases providing `Security Fixes` and `Bug Fixes`
 
 The `supportId` field MUST be included and used to specify which support policy is ending, referencing a support policy defined in the definitions section.
 
-An `endOfSupport` event should only exist when a support definition object exists.
+An `endOfSupport` event should only exist when a support definition object exists for the entire indicated version range.
 
 > TL;DR: Ceasing Security Fixes and Bug Fixes.
 
