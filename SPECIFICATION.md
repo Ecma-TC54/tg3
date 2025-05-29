@@ -49,7 +49,7 @@ The definitions object allows specification of reusable policies and calculation
 
 **Support**
 
-This is a list of support policies provided for a specific version or version range of a component. Note this SHOULD NOT include third party support policies or options.
+The support object defines the support policies provided for a specific version or version range of a component. This may include first-party manufacturer support or third-party support options endorsed by the manufacturer.
 
 | Field | Type | Description |
 |-------|------|-------------|
