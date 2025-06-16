@@ -25,7 +25,19 @@ The following types of work are commonly associated with software projects regar
 
 ### JSON Schema
 
-TODO: Add JSON Schema reference here.
+CLE is formally specified by a `Draft 2020-12` JSON Schema.
+
+Each published version of the specification is accompanied by a versioned meta-schema at a stable URI:
+
+```
+https://cle.example.com/schema/cle-<major>.<minor>.<patch>.schema.json
+```
+
+Every CLE document MUST include a top-level `$schema` field whose value is the URI of the meta-schema for the version it follows.
+
+The $schema field serves two purposes:
+- Validation – It allows tooling to validate that the document is structurally correct and conforms to the CLE specification.
+- Version Signaling – It identifies the version of the CLE specification the document follows, so consumers can parse and interpret it accordingly.
 
 ### Top-level Fields
 
