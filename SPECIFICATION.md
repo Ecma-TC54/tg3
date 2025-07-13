@@ -46,7 +46,7 @@ The $schema field serves two purposes:
 | Field | Type | Description |
 |-------|------|-------------|
 | `$schema` | string | URI identifying the [JSON Schema](https://json-schema.org/) document that describes the version of the CLE schema to use (e.g., "https://TODO/cle.v1.0.0.json"). CLE is built on JSON Schema draft 2020-12. |
-| `events` | array | Ordered array of Event objects representing the component's lifecycle events. MUST be chronologically ordered by effective date, descending. |
+| `events` | array | Ordered array of Event objects representing the component's lifecycle events. MUST be ordered by ID in descending order (newest events with highest IDs first). |
 
 **Additional Fields:**
 
@@ -54,6 +54,8 @@ The $schema field serves two purposes:
 |-------|------|-------------|
 | `versions` | array[object] | Array of version objects. Each object must contain either a `version` field with a simple string or a `range` field with a VERS-formatted version range string. |
 | `definitions` | object | Container for reusable policy definitions that can be referenced throughout the document. |
+| `index` | string | URL pointing to the index file that lists all CLE pages for this component. Only required when pagination is used. |
+| `next` | string | URL pointing to the next CLE page containing newer events (higher event IDs). OPTIONAL - only needed when pagination is used. |
 
 ### Definitions Object
 
@@ -107,10 +109,10 @@ The base object that represents a discrete lifecycle event. All events share the
 
 | Field | Type | Description |
 |-------|------|-------------|
+| `id` | integer | A unique, auto-incrementing integer identifier for the event. IDs must be assigned in ascending order as events are added. |
 | `type` | string | The type of lifecycle event. MUST be one of the defined Event Types. |
 | `effective` | string | The time when the event takes effect, as an ISO 8601 formatted timestamp in UTC (ending in "Z"). |
 | `published` | string | The time when the event was first published, as an ISO 8601 formatted timestamp in UTC (ending in "Z"). |
-| `modified` | string | The time when the event was last modified, as an ISO 8601 formatted timestamp in UTC (ending in "Z"). |
 
 ### Event Types
 
@@ -132,12 +134,12 @@ Indicates when a component version is released and available for use.
 Example:
 ```json
 {
+  "id": 1,
   "type": "released",
   "effective": "2024-01-01T00:00:00Z",
   "version": "1.0.0",
   "license": "MIT",
-  "published": "2023-06-01T00:00:00Z",
-  "modified": "2023-06-01T00:00:00Z",
+  "published": "2023-06-01T00:00:00Z"
 }
 ```
 
@@ -156,6 +158,7 @@ The manufacturer or maintainer ceases work on `Substantial Modifications` for a 
 Example:
 ```json
 {
+  "id": 2,
   "type": "endOfDevelopment",
   "effective": "2024-01-01T00:00:00Z",
   "versions": [
@@ -167,8 +170,7 @@ Example:
     }
   ],
   "supportId": "standard",
-  "published": "2023-06-01T00:00:00Z",
-  "modified": "2023-06-01T00:00:00Z",
+  "published": "2023-06-01T00:00:00Z"
 }
 ```
 
@@ -191,12 +193,12 @@ An `endOfSupport` event should only exist when a support definition object exist
 Example:
 ```json
 {
+  "id": 3,
   "type": "endOfSupport",
   "effective": "2024-01-01T00:00:00Z",
   "versions": ["1.0.0"],
   "supportId": "guaranteed",
-  "published": "2023-06-01T00:00:00Z",
-  "modified": "2023-06-01T00:00:00Z"
+  "published": "2023-06-01T00:00:00Z"
 }
 ```
 
@@ -214,6 +216,7 @@ The manufacturer or maintainer formally ceases all work (including `Distribution
 Example:
 ```json
 {
+  "id": 4,
   "type": "endOfLife",
   "effective": "2024-01-01T00:00:00Z",
   "versions": [
@@ -221,8 +224,7 @@ Example:
       "range": "vers:npm/>=1.0.0|<2.0.0"
     }
   ],
-  "published": "2023-06-01T00:00:00Z",
-  "modified": "2023-06-01T00:00:00Z",
+  "published": "2023-06-01T00:00:00Z"
 }
 ```
 
@@ -238,6 +240,7 @@ The manufacturer or maintainer ceases distribution of a specific version or vers
 Example:
 ```json
 {
+  "id": 5,
   "type": "endOfDistribution",
   "effective": "2024-01-01T00:00:00Z",
   "versions": [
@@ -245,8 +248,7 @@ Example:
       "version": "1.0.0"
     }
   ],
-  "published": "2023-06-01T00:00:00Z",
-  "modified": "2023-06-01T00:00:00Z",
+  "published": "2023-06-01T00:00:00Z"
 }
 ```
 
@@ -264,6 +266,7 @@ The manufacturer or maintainer ceases marketing and promotion of a specific vers
 Example:
 ```json
 {
+  "id": 6,
   "type": "endOfMarketing",
   "effective": "2024-01-01T00:00:00Z",
   "versions": [
@@ -271,8 +274,7 @@ Example:
       "range": "vers:npm/>=1.0.0|<2.0.0"
     }
   ],
-  "published": "2023-06-01T00:00:00Z",
-  "modified": "2023-06-01T00:00:00Z",
+  "published": "2023-06-01T00:00:00Z"
 }
 ```
 
@@ -291,6 +293,7 @@ Indicates when a version of a component is superseded by another version of a co
 Example:
 ```json
 {
+  "id": 7,
   "type": "supersededBy",
   "effective": "2024-01-01T00:00:00Z",
   "versions": [
@@ -299,8 +302,7 @@ Example:
     }
   ],
   "supersededByVersion": "2.0.0",
-  "published": "2023-06-01T00:00:00Z",
-  "modified": "2023-06-01T00:00:00Z",
+  "published": "2023-06-01T00:00:00Z"
 }
 ```
 
@@ -323,10 +325,10 @@ Indicates when a component is renamed.
 Example:
 ```json
 {
+  "id": 8,
   "type": "componentRenamed",
   "effective": "2024-01-01T00:00:00Z",
   "published": "2023-06-01T00:00:00Z",
-  "modified": "2023-06-01T00:00:00Z",
   "description": "The component has been renamed to 'new-component', because the product has been acquired by a new company",
   "references": [
     "https://example.com/component-renamed"
@@ -340,11 +342,42 @@ Example:
 }
 ```
 
+#### withdrawn
+*Category: Meta Event*
+
+Indicates that a previously published event is being withdrawn or revoked. This is used in a prepend-only event model where events cannot be modified, only new events can be added. When an event is withdrawn, it should be ignored during processing as if it never existed.
+
+**Additional Required Fields:**
+| Field | Type | Description |
+|-------|------|-------------|
+| `eventId` | integer | The ID of the event being withdrawn. Must reference an existing event ID. |
+
+**Additional Optional Fields:**
+| Field | Type | Description |
+|-------|------|-------------|
+| `references` | array[string] | List of URLs to supporting documentation explaining the withdrawal. |
+| `reason` | string | Human-readable explanation for why the event is being withdrawn. SHOULD be clear and concise. |
+
+Example:
+```json
+{
+  "id": 9,
+  "type": "withdrawn",
+  "effective": "2024-02-01T00:00:00Z",
+  "published": "2024-02-01T00:00:00Z",
+  "eventId": 3,
+  "reason": "The endOfSupport event was published in error. Support continues until 2025-01-01.",
+  "references": [
+    "https://example.com/support-extension-announcement"
+  ]
+}
+```
+
 ## Event Categories
 
-The CLE specification supports two distinct categories of events: `Version Events` and `Component Events`.
+The CLE specification supports three distinct categories of events: `Version Events`, `Component Events`, and `Meta Events`.
 
-The distinction between these categories is important as it affects how tools and systems should process and interpret the events. `Version Events` are typically used for lifecycle management and support planning, while `Component Events` are crucial for maintaining proper component identification and traceability over time.
+The distinction between these categories is important as it affects how tools and systems should process and interpret the events. `Version Events` are typically used for lifecycle management and support planning, `Component Events` are crucial for maintaining proper component identification and traceability over time, and `Meta Events` are used to manage the event history itself.
 
 ### Version Events
 
@@ -354,6 +387,8 @@ Events that affect specific versions or ranges of versions of a component. These
 - `endOfDevelopment`
 - `endOfSupport`
 - `endOfLife`
+- `endOfDistribution`
+- `endOfMarketing`
 - `supersededBy`
 
 ### Component Events
@@ -361,6 +396,142 @@ Events that affect specific versions or ranges of versions of a component. These
 Events that affect the component itself and may impact how the component is identified or referenced. These events often affect all versions of a component from the effective date forward. Component Events include:
 
 - `componentRenamed`: Changes how the component is identified
+
+### Meta Events
+
+Events that affect other events in the history. These are used in the prepend-only event model to manage the event stream. Meta Events include:
+
+- `withdrawn`: Revokes a previously published event
+
+## Event Processing Rules
+
+CLE uses a prepend-only event model where:
+
+1. **Immutability**: Once an event is published, it cannot be modified. New events must be added to correct or update information.
+2. **Ordering**: Events MUST be ordered by ID in descending order (newest events with highest IDs first).
+3. **ID Assignment**: Event IDs MUST be assigned as auto-incrementing integers in the order events are added (not by effective date).
+4. **Processing Order**: When processing events, consumers should process them in reverse order (oldest to newest by ID) to build the correct state.
+5. **Withdrawn Events**: When a `withdrawn` event is encountered:
+   - The event referenced by `eventId` should be ignored as if it never existed
+   - The withdrawn event itself remains in the history for audit purposes
+   - Any dependent events or calculations based on the withdrawn event should be recalculated
+
+## Pagination
+
+CLE supports pagination to handle components with extensive event histories. When a CLE file reaches the maximum limit of 100,000 events, it must be split into multiple pages.
+
+### Pagination Rules
+
+1. **Page Size Limit**: A single CLE page MUST NOT exceed 100,000 events. This is a hard limit to ensure reasonable file sizes and processing performance.
+
+2. **Event ID Continuity**: Event IDs MUST be globally unique and incrementing across all pages. IDs do not restart for each page.
+
+3. **Event Ordering**: Within each page, events MUST be ordered by ID in descending order (newest events with highest IDs first).
+
+4. **Page Chaining**: Pages are linked using the `next` field, which points to the page containing newer events (higher event IDs).
+
+5. **Index File**: When pagination is used, an index file SHOULD be provided via the `index` field to enable efficient discovery of all pages.
+
+### CLE Index Schema
+
+The CLE index file provides a directory of all pages for a component. It follows this structure:
+
+```json
+{
+  "$schema": "https://TODO/cle-index.v1.0.0.json",
+  "pages": [
+    {
+      "url": "https://example.com/component/cle-page-1.json",
+      "firstEventId": 1,
+      "lastEventId": 100000
+    },
+    {
+      "url": "https://example.com/component/cle-page-2.json",
+      "firstEventId": 100001,
+      "lastEventId": 150000
+    }
+  ]
+}
+```
+
+**Index Fields:**
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `$schema` | string | **Required.** URI identifying the CLE index schema version. |
+| `pages` | array[object] | **Required.** Array of page descriptor objects, ordered by event ID ranges. |
+
+**Page Descriptor Fields:**
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `url` | string | **Required.** URL of the CLE page file. |
+| `firstEventId` | integer | **Required.** The lowest event ID in this page. |
+| `lastEventId` | integer | **Required.** The highest event ID in this page. |
+
+### Pagination Examples
+
+**Example: Page 1 (oldest events)**
+```json
+{
+  "$schema": "https://TODO/cle.v1.0.0.json",
+  "index": "https://example.com/component/cle-index.json",
+  "next": "https://example.com/component/cle-page-2.json",
+  "events": [
+    {
+      "id": 100000,
+      "type": "released",
+      "effective": "2022-01-01T00:00:00Z",
+      "version": "5.0.0",
+      "published": "2022-01-01T00:00:00Z"
+    },
+    // ... more events ...
+    {
+      "id": 1,
+      "type": "released",
+      "effective": "2020-01-01T00:00:00Z",
+      "version": "1.0.0",
+      "published": "2020-01-01T00:00:00Z"
+    }
+  ]
+}
+```
+
+**Example: Page 2 (newer events)**
+```json
+{
+  "$schema": "https://TODO/cle.v1.0.0.json",
+  "index": "https://example.com/component/cle-index.json",
+  "events": [
+    {
+      "id": 150000,
+      "type": "released",
+      "effective": "2024-06-01T00:00:00Z",
+      "version": "10.0.0",
+      "published": "2024-06-01T00:00:00Z"
+    },
+    // ... more events ...
+    {
+      "id": 100001,
+      "type": "released",
+      "effective": "2022-01-02T00:00:00Z",
+      "version": "5.0.1",
+      "published": "2022-01-02T00:00:00Z"
+    }
+  ]
+}
+```
+
+Note: Page 2 does not have a `next` field because it contains the newest events.
+
+### Processing Paginated CLE Files
+
+When processing paginated CLE files:
+
+1. Start with any page (typically discovered via the index file or a known entry point).
+2. Process events within the current page according to standard processing rules.
+3. To process all events, use the index file to discover all pages, or follow `next` links to traverse pages.
+4. Event IDs are globally unique, so `withdrawn` events can reference events on any page.
 
 ## Distribution
 
@@ -373,31 +544,33 @@ TODO: think about the possible distribution methods around GitHub, TEA, etc.
   "$schema": "https://TODO/cle.v1.0.0.json",
   "events": [
     {
-      "type": "released",
-      "effective": "2019-01-01T00:00:00Z",
-      "versions": [
-        {
-          "version": "1.0.0"
-        }
-      ],
-      "license": "MIT",
-      "published": "2019-01-01T00:00:00Z",
-      "modified": "2019-01-01T00:00:00Z"
+      "id": 5,
+      "type": "withdrawn",
+      "effective": "2021-01-15T00:00:00Z",
+      "published": "2021-01-15T00:00:00Z",
+      "eventId": 2,
+      "reason": "The endOfSupport date was incorrect. Support actually ended on 2021-01-01.",
+      "references": [
+        "https://example.com/support-correction"
+      ]
     },
     {
+      "id": 4,
       "type": "endOfSupport",
-      "effective": "2020-01-01T00:00:00Z",
+      "effective": "2021-01-01T00:00:00Z",
+      "published": "2021-01-01T00:00:00Z",
       "versions": [
         {
           "range": "vers:npm/>=1.0.0|<2.0.0"
         }
       ],
-      "published": "2020-01-01T00:00:00Z",
-      "modified": "2020-01-01T00:00:00Z"
+      "supportId": "standard"
     },
     {
+      "id": 3,
       "type": "componentRenamed",
       "effective": "2020-01-01T00:00:00Z",
+      "published": "2020-01-01T00:00:00Z",
       "description": "The component has been renamed to 'new-component', because the product has been acquired by a new company",
       "identifiers": [
         {
@@ -407,9 +580,27 @@ TODO: think about the possible distribution methods around GitHub, TEA, etc.
       ],
       "references": [
         "https://example.com/component-renamed"
-      ],
+      ]
+    },
+    {
+      "id": 2,
+      "type": "endOfSupport",
+      "effective": "2020-01-01T00:00:00Z",
       "published": "2020-01-01T00:00:00Z",
-      "modified": "2020-01-01T00:00:00Z"
+      "versions": [
+        {
+          "range": "vers:npm/>=1.0.0|<2.0.0"
+        }
+      ],
+      "supportId": "standard"
+    },
+    {
+      "id": 1,
+      "type": "released",
+      "effective": "2019-01-01T00:00:00Z",
+      "published": "2019-01-01T00:00:00Z",
+      "version": "1.0.0",
+      "license": "MIT"
     }
   ]
 }
