@@ -54,7 +54,7 @@ The $schema field serves two purposes:
 |-------|------|-------------|
 | `versions` | array[object] | Array of version objects. Each object must contain either a `version` field with a simple string or a `range` field with a VERS-formatted version range string. |
 | `definitions` | object | Container for reusable policy definitions that can be referenced throughout the document. |
-| `index` | string | URL pointing to the index file that lists all CLE pages for this component. Only required when pagination is used. |
+| `index` | string | URL pointing to the index file that lists all CLE pages for this component. Only allowed to be present when pagination is used; and is required in that case. |
 | `next` | string | URL pointing to the next CLE page containing newer events (higher event IDs). When pagination is used, this field is required unless this is the final document. Otherwise, it MUST be absent. |
 
 ### Definitions Object
