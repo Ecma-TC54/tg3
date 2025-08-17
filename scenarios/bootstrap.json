@@ -1,42 +1,42 @@
 // https://endoflife.date/bootstrap
 {
   "$schema": "https://TODO/cle.v1.0.0.json",
+  "index": "https://endoflife.date/bootstrap/index.json",
+  "next": "https://endoflife.date/bootstrap/page2.json",
   "definitions": {
     "support": [
       {
         "id": "Active Support",
+        "url": "https://endoflife.date/bootstrap/support/active",
         "description": "Regular feature releases, bug fixes, security updates, and documentation updates."
       },
       {
         "id": "Critical Support",
+        "url": "https://endoflife.date/bootstrap/support/critical",
         "description": "Only critical bug fixes, critical security updates, and important documentation updates."
       }
     ]
   },
   "events": [
     {
-      "id": 1,
-      "type": "released",
-      "effective": "2013-08-19T00:00:00Z",
-      "published": "2013-08-19T00:00:00Z",
-      "version": "3.0.0",
-      "license": "MIT"
+      "id": 5,
+      "type": "endOfLife",
+      "effective": "2019-07-24T00:00:00Z",
+      "versions": [{ "range": "vers:npm/>=3.0.0|<4.0.0" }]
     },
-    // ... more released events ...
     {
       "id": 2,
       "type": "endOfDevelopment",
       "effective": "2016-09-05T00:00:00Z",
-      "published": "2016-09-05T00:00:00Z",
       "versions": [{ "range": "vers:npm/>=3.0.0|<4.0.0" }],
       "supportId": "Active Support"
     },
     {
-      "id": 5,
-      "type": "endOfLife",
-      "effective": "2019-07-24T00:00:00Z",
-      "published": "2019-07-24T00:00:00Z",
-      "versions": [{ "range": "vers:npm/>=3.0.0|<4.0.0" }]
+      "id": 1,
+      "type": "released",
+      "effective": "2013-08-19T00:00:00Z",
+      "version": "3.0.0",
+      "license": "MIT"
     }
   ]
 }
