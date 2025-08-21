@@ -1,0 +1,140 @@
+{
+  "$schema": "https://TODO/cle.v1.0.0.json",
+  "definitions": {
+    "support": [
+      {
+        "id": "fullSupport",
+        "description": "Full Support Phase (RHEL 5-9): New features, hardware enablement, bug fixes, and security updates."
+      },
+      {
+        "id": "maintenanceSupport1",
+        "description": "Maintenance Support 1 Phase (RHEL 5-7): Bug fixes and security updates, but no new features or hardware enablement."
+      },
+      {
+        "id": "maintenanceSupport2",
+        "description": "Maintenance Support 2 Phase (RHEL 5-7): Security updates only, no bug fixes, new features, or hardware enablement."
+      },
+      {
+        "id": "maintenanceSupport",
+        "description": "Maintenance Support Phase (RHEL 8+): Bug fixes and security updates, but no new features or hardware enablement."
+      },
+      {
+        "id": "extendedLife",
+        "description": "Extended Life Phase (RHEL 5-9): Access to content, documentation, and knowledge base with limited technical support. No bug fixes, security updates, or hardware enablement."
+      },
+      {
+        "id": "els",
+        "description": "Extended Life-cycle Support Add-on (RHEL 5-6): Annual subscription providing limited security fixes and bug fixes beyond the standard lifecycle phases."
+      }
+    ]
+  },
+  "events": [
+    {
+      "id": 12,
+      "type": "endOfLife",
+      "effective": "2035-05-31T00:00:00Z",
+      "versions": [
+        { "range": "vers:semver/>=9.0.0|<10.0.0" }
+      ]
+    },
+    {
+      "id": 11,
+      "type": "endOfSupport",
+      "effective": "2032-05-31T00:00:00Z",
+      "versions": [
+        { "range": "vers:semver/>=9.0.0|<10.0.0" }
+      ],
+      "supportId": "maintenanceSupport"
+    },
+    {
+      "id": 10,
+      "type": "endOfDevelopment",
+      "effective": "2027-05-31T00:00:00Z",
+      "versions": [
+        { "range": "vers:semver/>=9.0.0|<10.0.0" }
+      ],
+      "supportId": "fullSupport"
+    },
+    {
+      "id": 9,
+      "type": "released",
+      "effective": "2022-05-18T00:00:00Z",
+      "version": "9.0"
+    },
+    {
+      "id": 8,
+      "type": "endOfLife",
+      "effective": "2032-05-31T00:00:00Z",
+      "versions": [
+        { "range": "vers:semver/>=8.0.0|<9.0.0" }
+      ]
+    },
+    {
+      "id": 7,
+      "type": "endOfSupport",
+      "effective": "2029-05-31T00:00:00Z",
+      "versions": [
+        { "range": "vers:semver/>=8.0.0|<9.0.0" }
+      ],
+      "supportId": "maintenanceSupport"
+    },
+    {
+      "id": 6,
+      "type": "endOfDevelopment",
+      "effective": "2024-05-31T00:00:00Z",
+      "versions": [
+        { "range": "vers:semver/>=8.0.0|<9.0.0" }
+      ],
+      "supportId": "fullSupport"
+    },
+    {
+      "id": 5,
+      "type": "released",
+      "effective": "2019-05-07T00:00:00Z",
+      "version": "8.0"
+    },
+    // should endOfLife have a supportId?
+    {
+      "id": 4,
+      "type": "endOfLife",
+      "effective": "2029-05-31T00:00:00Z",
+      "versions": [
+        { "range": "vers:semver/>=7.0.0|<8.0.0" }
+      ]
+    },
+    {
+      "id": 3,
+      "type": "endOfSupport",
+      "effective": "2024-06-30T00:00:00Z",
+      "versions": [
+        { "range": "vers:semver/>=7.0.0|<8.0.0" }
+      ],
+      "supportId": "maintenanceSupport"
+    },
+    // should this be endOfDevelopment or endOfSupport?
+    {
+      "id": 2,
+      "type": "endOfDevelopment",
+      "effective": "2019-08-06T00:00:00Z",
+      "versions": [
+        { "range": "vers:semver/>=7.0.0|<8.0.0" }
+      ],
+      "supportId": "maintenanceSupport1"
+    },
+    {
+      "id": 6,
+      "type": "endOfDevelopment",
+      "effective": "2019-08-06T00:00:00Z",
+      "versions": [
+        { "range": "vers:semver/>=7.0.0|<8.0.0" }
+      ],
+      "supportId": "fullSupport"
+    },
+    {
+      "id": 1,
+      "type": "released",
+      "effective": "2014-06-10T00:00:00Z",
+      "version": "7.0"
+    }
+  ]
+}
