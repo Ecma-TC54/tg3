@@ -46,6 +46,8 @@ The $schema field serves two purposes:
 | Field | Type | Description |
 |-------|------|-------------|
 | `$schema` | string | URI identifying the [JSON Schema](https://json-schema.org/) document that describes the version of the CLE schema to use (e.g., "https://TODO/cle.v1.0.0.json"). CLE is built on JSON Schema draft 2020-12. |
+| `identifier` | string or array[string] | Component identifier(s) in the PURL format. When an array is provided, each identifier alias must identify the exact same bits from the same software but distributed differently. A software component that is distributed or packaged by a third party should not have an identifier in the array. Identifiers MUST NOT include version strings but MAY include qualifiers. |
+| `updatedAt` | string | ISO 8601 timestamp indicating when this CLE document was last updated. |
 | `events` | array | Ordered array of Event objects representing the component's lifecycle events. MUST be ordered by ID in descending order (newest events with highest IDs first). |
 
 **Additional Fields:**
@@ -64,6 +66,10 @@ The definitions object allows specification of reusable policies and calculation
 
 The support object defines the support policies provided for a specific version or version range of a component. This may include first-party manufacturer support or third-party support options endorsed by the manufacturer.
 
+Support policies are immutable once defined - the semantics and meaning of a support policy MUST NOT change over time for a given support policy ID. This ensures consistent interpretation of support commitments across the component's lifecycle.
+
+Support definitions are optional unless there is an event that requires them.
+
 | Field | Type | Description |
 |-------|------|-------------|
 | `support` | array[object] | List of support policies. |
@@ -72,7 +78,7 @@ Each support policy object has the following fields:
 
 | Field | Type | Description |
 |-------|------|-------------|
-| `id` | string | **Required.** Unique identifier for the support policy |
+| `id` | string | **Required.** Unique identifier for the support policy. Once assigned, the semantics of this support policy MUST remain constant. |
 | `description` | string | **Required.** Human readable description of the policy |
 | `url` | string | **Optional.** URL to detailed documentation about this support policy |
 
@@ -103,6 +109,8 @@ Example support policy definition:
 ### Event Object
 
 The base object that represents a discrete lifecycle event. All events share these common fields.
+
+Events are immutable once created - the content and meaning of a specific event MUST NOT change after it has been published. Additionally, the ordering of events across shards MUST NOT change.
 
 **Required Fields:**
 
