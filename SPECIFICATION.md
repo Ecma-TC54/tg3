@@ -1,7 +1,5 @@
 # Common Lifecycle Enumeration (CLE) Specification v1.0.0
 
-!! THIS IS A WORK IN PROGRESS AND NOT READY FOR USE.
-
 ## Overview
 
 The Common Lifecycle Enumeration (CLE) provides a standardized format for communicating software component lifecycle events in a machine-readable format. This specification defines the JSON schema and requirements for CLE documents.
