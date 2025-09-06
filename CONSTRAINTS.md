@@ -4,7 +4,7 @@ Common Lifecycle Enumeration (CLE) aims to standardize the communication of soft
 
 Let’s explore some of the constraints and goals below.
 
-> The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this document are to be interpreted as described in [RFC 2119](https://datatracker.ietf.org/doc/html/rfc2119).
+> The key words “MUST“, “MUST NOT“, “REQUIRED“, “SHALL“, “SHALL NOT“, “SHOULD“, “SHOULD NOT“, “RECOMMENDED“, “MAY“, and “OPTIONAL“ in this document are to be interpreted as described in [RFC 2119](https://datatracker.ietf.org/doc/html/rfc2119).
 
 ## 1. Balance Structure and Flexibility
 
